@@ -1,0 +1,54 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <h2>Expense Report (Date to Date)</h2>
+
+    <form action="{{ route('expenses.report.data') }}" method="POST" class="mb-4">
+        @csrf
+        <div class="row">
+            <div class="col-md-4">
+                <label>From Date</label>
+                <input type="date" name="from_date" class="form-control" value="{{ $from_date ?? '' }}" required>
+            </div>
+            <div class="col-md-4">
+                <label>To Date</label>
+                <input type="date" name="to_date" class="form-control" value="{{ $to_date ?? '' }}" required>
+            </div>
+            <div class="col-md-4 mt-4">
+                <button type="submit" class="btn btn-primary mt-2">Generate Report</button>
+            </div>
+        </div>
+    </form>
+
+    @isset($expenses)
+        <h4>Results from {{ $from_date }} to {{ $to_date }}</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($expenses as $expense)
+                    <tr>
+                        <td>{{ $expense->expense_date }}</td>
+                        <td>{{ $expense->title }}</td>
+                        <td>{{ $expense->description }}</td>
+                        <td>{{ number_format($expense->amount, 2) }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center">No expenses found</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+
+        <h5>Total Amount: {{ number_format($totalAmount, 2) }}</h5>
+    @endisset
+</div>
+@endsection

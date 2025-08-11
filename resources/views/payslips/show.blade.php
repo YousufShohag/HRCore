@@ -1,0 +1,259 @@
+
+@extends('layouts.app')
+
+@section('content')
+<div class="no-print mb-3 d-flex justify-content-between align-items-center">
+    <h2 class="m-0">Payslip Details For <strong>{{ $payslip->employee->name }}</strong></h2>
+    <div>
+        <button onclick="window.print()" class="btn btn-primary no-print ">🖨️ Print Payslip</button>
+{{-- <button onclick="window.print()" class="btn btn-primary me-2">🖨️ Print</button> --}}
+        <button onclick="window.close()" class="btn btn-secondary">❌ Close</button>
+    </div>
+</div>
+
+<div class="payslip-container d-flex justify-content-between flex-wrap">
+    @for($i = 1; $i <= 2; $i++)
+    <div class="payslip border p-4 bg-white" style="width: 48%; box-sizing: border-box;">
+        <!-- Header -->
+       <div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Company Info -->
+    <div>
+        <h4 class="mb-0">Jubilee Technology Ltd.</h4>
+        <small>
+            128, Kader Tower, Jubilee Road, Tinpool, Chattogram<br>
+            Phone: +880 1707207907 | Email: office@siscotek.com
+        </small>
+    </div>
+
+    <!-- Company Logo (Right Side) -->
+    <div>
+        <img src="{{ asset('images/Jubilee-Techonology-Ltd.png') }}" alt="Company Logo" style="height: 60px;">
+    </div>
+</div>
+
+        
+
+        <hr>
+
+        <!-- Title -->
+        <h5 class="text-center mb-2 text-decoration-underline">
+            PAYSLIP – {{ \Carbon\Carbon::parse($payslip->month)->format('F Y') }}<br>
+            <small class="fw-normal">{{ $i == 1 ? 'Employee Copy' : 'Company Copy' }}</small>
+        </h5>
+
+        <!-- Employee Info -->
+        <table class="table table-sm table-borderless w-100 mb-2">
+            <tr>
+                <td><strong>Employee Name:</strong> {{ $payslip->employee->name }}</td>
+                <td><strong>Designation:</strong> {{ $payslip->employee->designation }}</td>
+                
+            </tr>
+            <tr>
+                <td><strong>Department:</strong> {{ $payslip->employee->department ?? 'N/A' }}</td>
+                <td><strong>Date:</strong> {{ now()->format('d M Y') }}</td>
+            </tr>
+            
+        </table>
+
+        <!-- Monthly Work & Attendance Summary side by side -->
+        <div class="d-flex flex-column flex-md-row justify-content-between mb-" style="gap: 20px;">
+            <!-- Monthly Work Summary - Left -->
+            <div class="flex-fill">
+                @if($payslip->monthData)
+                <u><h6 class="fw-bold">Monthly Work Summary</h6></u>
+                <table class="table table-bordered table-sm w-100">
+                    <tbody>
+                        <tr><th>Total Working Days</th><td>{{ $payslip->monthData->working_days }}</td></tr>
+                        <tr><th>Govt. Holidays</th><td>{{ $payslip->monthData->govt_holidays }}</td></tr>
+                        <tr><th>Fridays</th><td>{{ $payslip->monthData->fridays }}</td></tr>
+                        {{-- <tr><th>Special Holidays</th><td>{{ $payslip->monthData->special_holidays }}</td></tr> --}}
+                        <tr><th>Total Effective Working Days</th><td>{{ $payslip->monthData->total_working_days }}</td></tr>
+                        <tr><th>Total Working Hours</th><td>{{ $payslip->monthData->total_working_days * 8 }}</td></tr>
+                    </tbody>
+                </table>
+                @else
+                <p class="text-danger">No monthly summary data found.</p>
+                @endif
+            </div>
+
+            <!-- Attendance Summary - Right -->
+            <div class="flex-fill">
+                <u><h6 class="fw-bold">Attendance Summary</h6></u>
+                <table class="table table-bordered table-sm w-100">
+                    <tbody>
+                         <tr class="{{ $payslip->total_worked_days  }} ">
+                            <th>Total Worked Days</th>
+                            <td>{{ $payslip->total_worked_days }}</td>
+                        </tr>
+                        <tr class="{{ $payslip->absent_days >= 3 ? 'table-danger fw-bold' : '' }} ">
+                            <th>Absent Days</th>
+                            <td>{{ $payslip->absent_days }}</td>
+                        </tr>
+                        <tr class="{{ $payslip->sick_leave_days >= 2 ? 'table-warning fw-bold' : '' }} ">
+                            <th>Sick Leave Days</th>
+                            <td>{{ $payslip->sick_leave_days }}</td>
+                        </tr>
+                        <tr class="{{ $payslip->total_hours < $payslip->total_worked_days * 8 ? 'table-danger ' : '' }} ">
+                            
+                            <th>Total Hours Worked</th>
+                            
+                            <td>{{ $payslip->total_hours }}</td>
+                        </tr>
+                        <tr class="{{ $payslip->average_hours < 8 ? 'table-danger fw-bold' : '' }} ">
+                            <th>Average Daily Hours</th>
+                            <td > {{ $payslip->average_hours }}</td>
+                        </tr>
+                       
+                    </tbody>
+                </table>
+                <p class="fw-bold">ONE Bank A/C: {{$payslip->employee->bank_account_number}}</p>
+            </div>
+        </div>
+@if(\Carbon\Carbon::parse($payslip->employee->joining_date)->format('Y-m') === \Carbon\Carbon::parse($payslip->month)->format('Y-m'))
+    <p class="text-muted"><em>* Note: Salary prorated based on joining date ({{ \Carbon\Carbon::parse($payslip->employee->joining_date)->format('d M, Y') }}).</em></p>
+@endif
+
+        <!-- Salary Breakdown -->
+        <h6 class="fw-bold">Salary Breakdown</h6>
+<table class="table table-bordered table-sm w-100 mb-1">
+    <thead class="table-light">
+        <tr>
+            <th>Description</th>
+            <th class="text-end">Amount (৳)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Basic Monthly Salary</td>
+            <td class="text-end">{{ number_format($payslip->employee->basic_salary, 2) }}</td>
+        </tr>
+        <tr>
+            <td>Paid Salary (Actual)</td>
+            <td class="text-end">{{ number_format($payslip->salary, 2) }}</td>
+        </tr>
+        <tr>
+            <td>Allowance</td>
+            <td class="text-end">{{ number_format($payslip->allowance, 2) }}</td>
+        </tr>
+        <tr>
+            <td>Deduction</td>
+            <td class="text-end">-{{ number_format($payslip->deduction, 2) }}</td>
+        </tr>
+        <tr class="fw-bold">
+            <td>Net Salary</td>
+            <td class="text-end">{{ number_format($payslip->net_salary, 2) }}</td>
+        </tr>
+    </tbody>
+</table>
+
+
+        <!-- Signature -->
+        <div class="d-flex justify-content-between mt-4 pt-3">
+            {{-- <div class="text-center">
+                <p>______________________</p>
+                <p class="m-0">Authorized Signature</p>
+            </div> --}}
+            <div class="mt-1 d-flex justify-content-end">
+                <div class="text-center">
+                    <p class="mb-1">Authorized Signature</p>
+                    {{-- <img src="{{ asset('images/Signature.jpg') }}" alt="Signature" style="height: 50px;"> --}}
+                    
+                </div>
+            </div>
+            <div class=" d-flex justify-content-end">
+               {!! QrCode::size(70)->generate('This is From Jubilee Technology Ltd || This payslip is auto-generated and digitally signed. No manual signature is required. '.'Employee Name:'.$payslip->employee->name . ' | Payslip ID: ' . $payslip->id) !!}
+            </div>
+            <div class="mt-1 d-flex justify-content-end">
+                <div class="text-center">
+                    <p class="mb-2">Employee Signature</p>
+                    
+                </div>
+            </div>
+            {{-- <div class="text-center ">
+                
+                <p class="mb-2">Employee Signature</p>
+            </div> --}}
+        </div>
+
+
+
+
+
+
+    </div>
+    
+    @endfor
+</div>
+@endsection
+
+@section('scripts')
+<style>
+    body {
+        background: #f8f9fa;
+    }
+    .payslip-container {
+        gap: 1.5%;
+    }
+    .payslip {
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+    /* Highlight rows if high absence or sick leave */
+    .table-danger {
+        background-color: #f8d7da !important;
+        color: #842029 !important;
+    }
+    .table-warning {
+        background-color: #fff3cd !important;
+        color: #664d03 !important;
+    }
+
+    /* Responsive: stack summaries on smaller screens */
+    @media (max-width: 767.98px) {
+        .payslip table {
+            margin-bottom: 1rem;
+        }
+        .payslip .d-flex.flex-md-row {
+            flex-direction: column !important;
+        }
+    }
+
+  <style>
+@media print {
+    @page {
+        size: 11in 8.5in; /* Letter Landscape: 11 inches wide, 8.5 inches tall */
+        margin: 0.5in;
+    }
+
+    html, body {
+        width: 11in;
+        height: 8.5in;
+        background: white;
+        color: black;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .payslip-container {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between;
+        gap: 1%;
+    }
+
+    .payslip {
+        box-shadow: none !important;
+        page-break-inside: avoid;
+        width: 100%;
+    }
+}
+</style>
+
+</style>
+
+@endsection

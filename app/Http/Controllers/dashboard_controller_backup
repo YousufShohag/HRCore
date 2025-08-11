@@ -1,0 +1,139 @@
+<?php
+
+namespace App\Http\Controllers;
+
+
+use Illuminate\Http\Request;
+use App\Models\Payslip;
+use App\Models\Employee;
+use App\Models\Expense;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class DashboardController extends Controller
+{
+    public function index(Request $request)
+    {
+        // Filters from query params
+        $year = $request->input('year');
+        $month = $request->input('month');
+        $department = $request->input('department');
+
+        $payslipsQuery = Payslip::with('employee')->latest();
+        // Base payslip query with employee relation
+        $payslipQuery = Payslip::with('employee');
+
+        // Apply year filter
+        if ($year) {
+            $payslipQuery->whereYear('month', $year);
+        }
+
+      // Apply filters
+        if ($year) {
+            $payslipQuery->whereYear('month', $year);
+        }
+        if ($month) {
+            $payslipQuery->whereMonth('month', $month);
+        }
+        if ($department) {
+            $payslipQuery->whereHas('employee', function ($query) use ($department) {
+                $query->where('department', $department);
+            });
+        }
+
+        // ✅ Show latest 10 payslips by creation date
+        $payslips = $payslipQuery->orderBy('created_at', 'desc')->limit(20)->get();
+        // $payslips = $payslipQuery->orderBy('created_at', 'desc')->paginate(20);
+
+// $payslips = $payslipsQuery->limit(10)->get(); // 👈 latest 10 payslips
+        // Get distinct years from payslips for filter dropdown
+        $years = Payslip::selectRaw('YEAR(month) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+
+        // Get distinct departments from employees
+        $departments = Employee::select('department')
+            ->distinct()
+            ->whereNotNull('department')
+            ->pluck('department');
+
+        // Monthly payslip counts for the chart (for the current year or filtered year)
+        $chartYear = $year ?? date('Y');
+
+        $monthlyData = Payslip::selectRaw('MONTH(month) as month, COUNT(*) as count')
+            ->whereYear('month', $chartYear)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('count', 'month');
+
+        // Prepare labels (month names) and counts (default 0 if no data)
+        $months = [];
+        $counts = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $months[] = Carbon::create()->month($m)->format('F');
+            $counts[] = $monthlyData->get($m, 0);
+        }
+
+        // Total employees count
+        $totalEmployees = Employee::count();
+
+        // Total payslips issued (apply filters here if needed, but showing all)
+        $issuedCount = $payslipQuery->count();
+
+ $expenses = Expense::latest()->take(5)->get();
+    return view('dashboard', compact('expenses'));
+        
+        return view('dashboard.index', compact(
+            'payslips',
+            'years',
+            'departments',
+            'months',
+            'counts',
+            'issuedCount',
+            'totalEmployees'
+        ));
+    }
+
+   
+
+// public function index(Request $request)
+// {
+//     $years = Payslip::selectRaw('YEAR(month) as year')->distinct()->pluck('year')->sortDesc();
+//     $departments = Employee::select('department')->distinct()->pluck('department');
+
+//     $payslipsQuery = Payslip::with('employee')->latest();
+
+//     // Optional: Apply filters
+//     if ($request->filled('year')) {
+//         $payslipsQuery->whereYear('month', $request->year);
+//     }
+
+//     if ($request->filled('month')) {
+//         $payslipsQuery->whereMonth('month', $request->month);
+//     }
+
+//     if ($request->filled('department')) {
+//         $payslipsQuery->whereHas('employee', function ($q) use ($request) {
+//             $q->where('department', $request->department);
+//         });
+//     }
+
+//     $payslips = $payslipsQuery->limit(10)->get(); // 👈 latest 10 payslips
+
+//     $totalEmployees = Employee::count();
+//     $issuedCount = Payslip::count();
+
+//     // For chart (this stays as-is)
+//     $monthlyData = Payslip::selectRaw('MONTH(month) as month, COUNT(*) as count')
+//         ->groupBy('month')
+//         ->orderBy('month')
+//         ->get();
+
+//     $months = $monthlyData->pluck('month')->map(fn($m) => \Carbon\Carbon::create()->month($m)->format('F'));
+//     $counts = $monthlyData->pluck('count');
+
+//     return view('dashboard.index', compact('payslips', 'years', 'departments', 'months', 'counts', 'totalEmployees', 'issuedCount'));
+// }
+
+}

@@ -1,0 +1,214 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Employee Directory</h2>
+    </div>
+
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+<a href="{{ route('employees.create') }}" class="btn btn-primary mb-3">➕ Add New Employee</a>
+<a href="{{ route('dashboard.index') }}" class="btn btn-success mb-3">&larr; Back into Dashboard</a>
+    <!-- Filters -->
+    <form method="GET" action="{{ route('employees.index') }}" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <input type="text" name="name" value="{{ request('name') }}" class="form-control" placeholder="Search by Name">
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="designation" value="{{ request('designation') }}" class="form-control" placeholder="Search by Designation">
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="department" value="{{ request('department') }}" class="form-control" placeholder="Search by Department">
+        </div>
+        <div class="col-md-2">
+            <input type="number" step="0.01" name="salary" value="{{ request('salary') }}" class="form-control" placeholder="Salary =">
+        </div>
+        <div class="col-md-2">
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">🔍 Filter</button>
+            <a href="{{ route('employees.index') }}" class="btn btn-secondary w-100">⟲ Reset</a>
+            
+        </div>
+    </form>
+
+    <!-- Employee Table -->
+    @if($employees->count())
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th>Department</th>
+                        <th>Bank Account</th>
+                        <th> Salary</th>
+                        <th> Join Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($employees as $index => $employee)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>
+                            @if($employee->image)
+                                <img src="{{ asset('storage/' . $employee->image) }}" width="50" height="50" class="rounded-circle">
+                            @else
+                                <span class="text-muted">N/A</span>
+                            @endif
+                        </td>
+                        <td>{{ $employee->name }}</td>
+                        <td>{{ $employee->designation }}</td>
+                        <td>{{ $employee->department ?? 'N/A' }}</td>
+                        <td>{{ $employee->bank_account_number ?? 'N/A' }}</td>
+                        <td>{{ number_format($employee->basic_salary, 2) }}</td>
+                        <td>{{ $employee->bank_account_number }}</td>
+                        <td>
+                            @if(!$employee->resign_date || \Carbon\Carbon::parse($employee->resign_date)->isFuture())
+                                <span class="badge bg-success">Active</span>
+                            @else
+                                <span class="badge bg-danger">Inactive</span>
+                            @endif
+                        </td>
+                        <td>
+                            <button 
+                                class="btn btn-sm btn-outline-primary edit-btn"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#editModal"
+                                data-id="{{ $employee->id }}"
+                                data-name="{{ $employee->name }}"
+                                data-designation="{{ $employee->designation }}"
+                                data-department="{{ $employee->department }}"
+                                data-basic_salary="{{ $employee->basic_salary }}"
+                                data-join_date="{{ $employee->join_date ? $employee->join_date->format('Y-m-d') : '' }}"
+                                data-resign_date="{{ $employee->resign_date ? $employee->resign_date->format('Y-m-d') : '' }}"
+                                data-image="{{ $employee->image ? asset('storage/' . $employee->image) : '' }}"
+
+                            >✏️ Edit</button>
+
+                            <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger">🗑️ Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @else
+        <div class="alert alert-info mt-3">
+            No employees found.
+        </div>
+    @endif
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    {{-- <form method="POST" id="editForm" > --}}
+    <form method="POST" id="editForm" enctype="multipart/form-data">
+
+      @csrf
+      @method('PUT')
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Employee</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" name="id" id="edit-id">
+            <div class="mb-3">
+                <label>Name</label>
+                <input type="text" name="name" id="edit-name" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label>Designation</label>
+                <input type="text" name="designation" id="edit-designation" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label>Department</label>
+                <input type="text" name="department" id="edit-department" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label>Basic Salary</label>
+                <input type="number" step="0.01" name="basic_salary" id="edit-basic_salary" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label>Join Date</label>
+                <input type="date" name="join_date" id="edit-join_date" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label>Resign Date</label>
+                <input type="date" name="resign_date" id="edit-resign_date" class="form-control">
+            </div>
+            
+            <div class="mb-3">
+                <label>Current Image:</label><br>
+                <img id="edit-image-preview" src="" alt="No Image" style="max-width: 100px; max-height: 100px; border-radius: 50%;">
+            </div>
+            <div class="mb-3">
+                <label>Update Image (optional)</label>
+                <input type="file" name="image" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label>Update Document (optional)</label>
+                <input type="file" name="document" class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll(".edit-btn");
+        buttons.forEach(button => {
+            button.addEventListener("click", function () {
+                document.getElementById("edit-id").value = this.dataset.id;
+                document.getElementById("edit-name").value = this.dataset.name;
+                document.getElementById("edit-designation").value = this.dataset.designation;
+                document.getElementById("edit-department").value = this.dataset.department;
+                document.getElementById("edit-basic_salary").value = this.dataset.basic_salary;
+                document.getElementById("edit-join_date").value = this.dataset.join_date;
+                document.getElementById("edit-resign_date").value = this.dataset.resign_date;
+
+ // Show image preview
+            const imagePreview = document.getElementById("edit-image-preview");
+            if (this.dataset.image) {
+                imagePreview.src = this.dataset.image;
+                imagePreview.style.display = 'inline-block';
+            } else {
+                imagePreview.src = '';
+                imagePreview.style.display = 'none';
+            }
+
+                // update form action
+                const form = document.getElementById("editForm");
+                form.action = `/employees/${this.dataset.id}`;
+            });
+        });
+    });
+</script>
+@endsection
