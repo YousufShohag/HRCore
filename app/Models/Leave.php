@@ -34,4 +34,26 @@ class Leave extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'approved_by');
     }
+
+    protected static function booted()
+{
+    static::deleting(function ($leave) {
+        \Log::info('Deleting leave: ', ['leave_id' => $leave->id, 'days' => $leave->days]);
+
+        $employee = $leave->employee;
+
+        if ($employee) {
+            \Log::info('Before update', ['leave_balance' => $employee->leave_balance]);
+
+            $employee->leave_balance -= $leave->days;
+            if ($employee->leave_balance < 0) {
+                $employee->leave_balance = 0;
+            }
+            $employee->save();
+
+            \Log::info('After update', ['leave_balance' => $employee->leave_balance]);
+        }
+    });
+}
+
 }

@@ -171,9 +171,35 @@ class LeaveController extends Controller
         return redirect()->route('leaves.index')->with('success', 'Leave rejected.');
     }
 
-    public function destroy(Leave $leave)
-    {
-        $leave->delete();
-        return redirect()->route('leaves.index')->with('success', 'Leave deleted.');
-    }
+    // public function destroy(Leave $leave)
+    // {
+    //     $leave->delete();
+    //     return redirect()->route('leaves.index')->with('success', 'Leave deleted.');
+    // }
+//     public function destroy($id)
+// {
+//     $leave = Leave::findOrFail($id);
+
+//     // Reduce employee leave balance
+//     $employee = $leave->employee;
+//     if ($employee && $employee->leave_balance > 0) {
+//         $employee->leave_balance -= $leave->days; // assuming you have a `days` column
+//         if ($employee->leave_balance < 0) {
+//             $employee->leave_balance = 0; // prevent negative balance
+//         }
+//         $employee->save();
+//     }
+
+//     $leave->delete();
+
+//     return redirect()->back()->with('success', 'Leave deleted and balance updated.');
+// }
+
+public function destroy($id)
+{
+    $leave = Leave::findOrFail($id); // Eloquent model instance
+    $leave->delete(); // Will trigger booted() deleting event
+    return back()->with('success', 'Leave deleted successfully.');
+}
+
 }

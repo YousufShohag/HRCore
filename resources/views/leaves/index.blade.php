@@ -7,9 +7,7 @@
         <a href="{{ route('dashboard.index') }}" class="btn btn-outline-secondary">← Back to Dashboard</a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+
     @if($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
