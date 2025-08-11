@@ -201,5 +201,19 @@ public function destroy($id)
     $leave->delete(); // Will trigger booted() deleting event
     return back()->with('success', 'Leave deleted successfully.');
 }
+// public function destroy($leaveId)
+// {
+//     $leave = Leave::findOrFail($leaveId);
+//     $employee = $leave->employee; // assuming relation exists
 
+//     // Decrease leave balance by leave days count before deleting leave
+//     $employee->leave_balance -= $leave->days; // or however you store leave duration
+//     if($employee->leave_balance < 0) $employee->leave_balance = 0; // prevent negative
+
+//     $employee->save();
+
+//     $leave->delete();
+
+//     return redirect()->back()->with('success', 'Leave deleted and balance updated.');
+// }
 }

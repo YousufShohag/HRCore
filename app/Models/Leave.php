@@ -45,7 +45,7 @@ class Leave extends Model
         if ($employee) {
             \Log::info('Before update', ['leave_balance' => $employee->leave_balance]);
 
-            $employee->leave_balance -= $leave->days;
+            $employee->leave_balance += $leave->days;
             if ($employee->leave_balance < 0) {
                 $employee->leave_balance = 0;
             }
