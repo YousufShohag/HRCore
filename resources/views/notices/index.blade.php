@@ -4,7 +4,7 @@
 <div class="container">
     <h2 class="mb-4">Notices</h2>
     <a href="{{ route('notices.create') }}" class="btn btn-primary mb-3">Create Notice</a>
-    <a href="{{ route('dashboard.index') }}" class="btn btn-outline-secondary">← Back to Dashboard</a>
+    <a href="{{ route('dashboard.index') }}" class="btn btn-outline-secondary mb-3">← Back to Dashboard</a>
 
     <table class="table table-bordered">
         <thead>
@@ -57,11 +57,11 @@
                                 </div>
                                 <div class="mb-3">
                                     <label>Publish Date</label>
-                                    <input type="date" name="publish_date" value="{{ $notice->publish_date }}" class="form-control" required>
+                                    <input type="date" name="publish_date" value="{{ \Carbon\Carbon::parse($notice->publish_date)->format('Y-m-d') }}" class="form-control" required>
                                 </div>
                                 <div class="mb-3">
                                     <label>Expiry Date</label>
-                                    <input type="date" name="expiry_date" value="{{ $notice->expiry_date }}" class="form-control">
+                                    <input type="date" name="expiry_date" value="{{ $notice->expiry_date ? \Carbon\Carbon::parse($notice->expiry_date)->format('Y-m-d') : '' }}" class="form-control">
                                 </div>
                             </div>
                             <div class="modal-footer">

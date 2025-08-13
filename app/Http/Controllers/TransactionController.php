@@ -84,6 +84,30 @@ public function index(Request $request)
                          ->with('success', 'Transaction deleted successfully.');
     }
 
+    public function update(Request $request, Transaction $transaction)
+{
+    // Validate the input
+    $request->validate([
+        'type' => 'required|in:income,expense',
+        'title' => 'required|string|max:255',
+        'amount' => 'required|numeric|min:0',
+        'transaction_date' => 'required|date'
+    ]);
+
+    // Update the transaction
+    $transaction->update($request->all());
+
+    // Redirect back with success message
+    return redirect()->route('transactions.index')
+                     ->with('success', 'Transaction updated successfully.');
+}
+
+// public function show(Transaction $transaction)
+// {
+//     // Optional: redirect to index or leave empty
+//     return redirect()->route('transactions.report');
+// }
+
     // Report (date-to-date)
     public function report(Request $request)
     {

@@ -5,6 +5,7 @@
     <h2>Expense List</h2>
     <a href="{{ route('expenses.create') }}" class="btn btn-primary mb-3">Add Expense</a>
     <a href="{{ route('expenses.report') }}" class="btn btn-primary mb-3">Report</a>
+    <a href="{{ route('dashboard.index') }}" class="btn btn-outline-secondary mb-3">← Back to Dashboard</a>
 
    
 

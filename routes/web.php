@@ -61,7 +61,7 @@ Route::post('/payslips', [PayslipController::class, 'store'])->name('payslips.st
 Route::get('/payslips', [PayslipController::class, 'index'])->name('payslips.index');
 Route::delete('/payslips/{payslip}', [PayslipController::class, 'destroy'])->name('payslips.destroy');
 
-// ✅ ADD THESE TWO FOR EDIT/UPDATE
+//  ADD THESE TWO FOR EDIT/UPDATE
 Route::get('/payslips/{payslip}/edit', [PayslipController::class, 'edit'])->name('payslips.edit');
 Route::put('/payslips/{payslip}', [PayslipController::class, 'update'])->name('payslips.update');
 
@@ -92,12 +92,15 @@ Route::post('/expenses/report', [ExpenseController::class, 'reportData'])->name(
 
 // Transection system
 // Route::resource('transactions', TransactionController::class);
-
 // // Report
 // Route::get('transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
-Route::get('/transactions', [TransactionController::class, 'index']);
-Route::resource('transactions', TransactionController::class)->except(['show', 'edit', 'update']);
+// Route::resource('transactions', TransactionController::class);
+// Route::get('/transactions', [TransactionController::class, 'index']);
+// Route::resource('transactions', TransactionController::class)->except(['show', 'edit', 'update']);
 //Route::resource('transactions', TransactionController::class)->except(['show', 'edit', 'update']);
+Route::get('/transactions', [TransactionController::class, 'index']);
+Route::resource('transactions', TransactionController::class)
+    ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 Route::get('/transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
 
 

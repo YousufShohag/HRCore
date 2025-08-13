@@ -70,6 +70,9 @@
     </div>
 </form>
 
+
+
+
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -92,12 +95,59 @@
             <td>{{ $t->title }}</td>
             <td>{{ number_format($t->amount, 2) }}</td>
             <td>
-                <form action="{{ route('transactions.destroy', $t->id) }}" method="POST">
+                <!-- Edit Button -->
+                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editTransactionModal{{ $t->id }}">
+                    Edit
+                </button>
+
+                <!-- Delete Form -->
+                <form action="{{ route('transactions.destroy', $t->id) }}" method="POST" style="display:inline;">
                     @csrf @method('DELETE')
                     <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this?')">Del</button>
                 </form>
             </td>
         </tr>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editTransactionModal{{ $t->id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <form action="{{ route('transactions.update', $t->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Transaction</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label>Date</label>
+                                <input type="date" name="transaction_date" class="form-control" value="{{ $t->transaction_date }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label>Type</label>
+                                <select name="type" class="form-control" required>
+                                    <option value="income" {{ $t->type == 'income' ? 'selected' : '' }}>Income</option>
+                                    <option value="expense" {{ $t->type == 'expense' ? 'selected' : '' }}>Expense</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label>Title</label>
+                                <input type="text" name="title" class="form-control" value="{{ $t->title }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label>Amount</label>
+                                <input type="number" name="amount" class="form-control" step="0.01" value="{{ $t->amount }}" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         @empty
         <tr><td colspan="5" class="text-center">No transactions found.</td></tr>
         @endforelse

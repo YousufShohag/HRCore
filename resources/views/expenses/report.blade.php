@@ -3,6 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Expense Report (Date to Date)</h2>
+    <a href="{{ route('expenses.index') }}" class="btn btn-outline-secondary mb-3">← Back to Expences</a>
 
     <form action="{{ route('expenses.report.data') }}" method="POST" class="mb-4">
         @csrf
@@ -22,33 +23,40 @@
     </form>
 
     @isset($expenses)
+    <div class="d-flex justify-content-between align-items-center mb-2">
         <h4>Results from {{ $from_date }} to {{ $to_date }}</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($expenses as $expense)
-                    <tr>
-                        <td>{{ $expense->expense_date }}</td>
-                        <td>{{ $expense->title }}</td>
-                        <td>{{ $expense->description }}</td>
-                        <td>{{ number_format($expense->amount, 2) }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="text-center">No expenses found</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+        <button class="btn btn-success" onclick="window.print()">
+            <i class="bi bi-printer"></i> Print Report
+        </button>
+    </div>
 
-        <h5>Total Amount: {{ number_format($totalAmount, 2) }}</h5>
-    @endisset
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($expenses as $expense)
+                <tr>
+                    <td>{{ \Carbon\Carbon::parse($expense->expense_date)->format('m/d/Y') }}</td>
+                    <td>{{ $expense->title }}</td>
+                    <td>{{ $expense->description }}</td>
+                    <td>{{ number_format($expense->amount, 2) }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4" class="text-center">No expenses found</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <h5>Total Amount: {{ number_format($totalAmount, 2) }}</h5>
+@endisset
+
 </div>
 @endsection

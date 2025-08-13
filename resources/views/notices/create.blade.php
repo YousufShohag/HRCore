@@ -3,6 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Create Notice</h2>
+    <a href="{{ route('notices.index') }}" class="btn btn-outline-secondary mb-3">← Back to Notice</a>
 
     <form action="{{ route('notices.store') }}" method="POST">
         @csrf
