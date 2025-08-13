@@ -18,6 +18,9 @@ use App\Http\Controllers\LeaveController;
 
 use App\Http\Controllers\AttendanceController;
 
+use App\Http\Controllers\NoticeController;
+
+
 
 
 
@@ -117,6 +120,15 @@ Route::get('/attendance/report', [AttendanceController::class, 'report'])->name(
 
 // IDCARD
 Route::get('/employee/{id}/id-card', [EmployeeController::class, 'generateIdCard'])->name('employee.id-card');
+
+// Notice
+
+Route::resource('notices', NoticeController::class);
+
+// Route::resource('notices', NoticeController::class);
+Route::get('notices/{id}/print', [NoticeController::class, 'print'])->name('notices.print');
+
+
 
 
 

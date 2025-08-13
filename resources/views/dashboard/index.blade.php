@@ -16,6 +16,7 @@
         <a href="{{ route('expenses.index') }}" class="btn btn-outline-primary">💰 Expences </a>
         <a href="{{ route('transactions.index') }}" class="btn btn-outline-primary">💳 Transactions</a>
         <a href="{{ route('leaves.index') }}" class="btn btn-outline-primary">💳 Leave</a>
+        <a href="{{ route('notices.index') }}" class="btn btn-outline-primary">💳 Notice</a>
     </div>
 
 
