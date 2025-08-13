@@ -16,7 +16,7 @@
         <div class="d-flex gap-2">
             <a href="#" onclick="window.print()" class="btn btn-outline-secondary no-print"><i class="bi bi-printer"></i> Print</a>
             <a href="{{ route('payslips.create') }}" class="btn btn-success"><i class="bi bi-plus-circle"></i> Add New</a>
-            <a href="{{ route('dashboard.index') }}" class="btn btn-outline-dark"><i class="bi bi-arrow-left-circle"></i> Back</a>
+            <a href="{{ route('dashboard') }}" class="btn btn-outline-dark"><i class="bi bi-arrow-left-circle"></i> Back</a>
         </div>
     </div>
 

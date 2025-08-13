@@ -82,7 +82,7 @@ class DashboardController extends Controller
 
 
     // ✅ Return all data in one view
-    return view('dashboard.index', compact(
+    return view('dashboard', compact(
         'payslips',
         'years',
         'departments',

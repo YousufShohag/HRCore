@@ -4,7 +4,7 @@
 <div class="container">
     <h2 class="mb-4">Notices</h2>
     <a href="{{ route('notices.create') }}" class="btn btn-primary mb-3">Create Notice</a>
-    <a href="{{ route('dashboard.index') }}" class="btn btn-outline-secondary mb-3">← Back to Dashboard</a>
+    <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary mb-3">← Back to Dashboard</a>
 
     <table class="table table-bordered">
         <thead>

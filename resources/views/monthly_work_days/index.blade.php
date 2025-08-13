@@ -12,7 +12,7 @@
             <a href="{{ route('monthly_work_days.create') }}" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> Add New
             </a>
-            <a href="{{ route('dashboard.index') }}" class="btn btn-outline-dark">
+            <a href="{{ route('dashboard') }}" class="btn btn-outline-dark">
                 <i class="bi bi-arrow-left-circle"></i> Back
             </a>
         </div>

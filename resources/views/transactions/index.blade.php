@@ -15,7 +15,7 @@
                     <div class="col-md-4"><a href="{{ route('transactions.report') }}" class="btn btn-primary">
                         <i class="bi bi-file-earmark-text"></i> Transactions Report
                     </a></div>
-                    <div class="col-md-4"><a href="{{ route('dashboard.index') }}" class="btn btn-success">
+                    <div class="col-md-4"><a href="{{ route('dashboard') }}" class="btn btn-success">
                         <i class="bi bi-arrow-left"></i> Back to Dashboard
                     </a></div>
                 </div>

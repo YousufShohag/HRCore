@@ -4,7 +4,7 @@
 <div class="container py-3">
     <div class="d-flex justify-content-between mb-3">
         <h3>Employee Leave Management</h3>
-        <a href="{{ route('dashboard.index') }}" class="btn btn-outline-secondary">← Back to Dashboard</a>
+        <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary">← Back to Dashboard</a>
     </div>
 
 

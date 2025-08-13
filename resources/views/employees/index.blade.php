@@ -8,7 +8,7 @@
             <a href="{{ route('employees.create') }}" class="btn btn-primary me-2">
                 <i class="bi bi-plus-circle"></i> Add Employee
             </a>
-            <a href="{{ route('dashboard.index') }}" class="btn btn-success">
+            <a href="{{ route('dashboard') }}" class="btn btn-success">
                 <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
         </div>
@@ -354,9 +354,9 @@
             });
         });
     });
-</script>
 
-<script>
+
+
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".view-btn").forEach(button => {
             button.addEventListener("click", function () {
