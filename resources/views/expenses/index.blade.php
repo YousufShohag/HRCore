@@ -27,11 +27,13 @@
             </tr>
         </thead>
         <tbody>
+        @php $total = 0; @endphp
         @foreach($expenses as $expense)
+         @php $total += $expense->amount; @endphp
             <tr>
                 <td>{{ $expense->title }}</td>
                 <td>{{ $expense->amount }}</td>
-                <td>{{ $expense->expense_date }}</td>
+                <td>{{ \Carbon\Carbon::parse($expense->expense_date)->format('m/d/Y')  }}</td>
                 <td>{{ $expense->description }}</td>
                 <td>
                     <a href="{{ route('expenses.edit', $expense) }}" class="btn btn-warning btn-sm">Edit</a>
@@ -44,6 +46,13 @@
             </tr>
         @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="1">Total</th>
+                <th>{{ number_format($total, 2) }}</th>
+                <th colspan="3"></th>
+            </tr>
+        </tfoot>
     </table>
 
     {{ $expenses->links() }}

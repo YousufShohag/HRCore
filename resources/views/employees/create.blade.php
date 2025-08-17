@@ -97,4 +97,11 @@
         </div>
     </div>
 </div>
+
+{{-- Focus Name --}}
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('name').focus();
+    });
+</script>
 @endsection

@@ -54,85 +54,6 @@ public function index(Request $request)
     return view('payslips.create', compact('employees'));  // Pass employees to view
 }
 
-    // public function store(Request $request)
-    // {
-    //     $employee = Employee::findOrFail($request->employee_id);
-    //     $net_salary = $employee->basic_salary + $request->allowance - $request->deduction;
-
-    //     Payslip::create([
-    //         'employee_id' => $employee->id,
-    //         'month' => $request->month,
-    //         'allowance' => $request->allowance,
-    //         'deduction' => $request->deduction,
-    //         'net_salary' => $net_salary,
-    //     ]);
-
-    //     return redirect()->route('payslips.index')->with('success', 'Payslip created');
-    // }
-
-
-
-
-//     public function store(Request $request)
-// {
-//     $request->validate([
-//         'employee_id' => 'required|exists:employees,id',
-//         'month' => 'required|date',
-//         'total_hours' => 'required|integer|min:1',
-//         'average_hours' => 'required|numeric|min:1',
-//         'salary' => 'required|numeric|min:0',
-//         'allowance' => 'nullable|numeric|min:0',
-//         'deduction' => 'nullable|numeric|min:0',
-//     ]);
-
-//     $net_salary = $request->salary + $request->allowance - $request->deduction;
-
-//     Payslip::create([
-//         'employee_id'   => $request->employee_id,
-//         'month'         => $request->month,
-//         'total_hours'   => $request->total_hours,
-//         'average_hours' => $request->average_hours,
-//         'salary'        => $request->salary,
-//         'allowance'     => $request->allowance ?? 0,
-//         'deduction'     => $request->deduction ?? 0,
-//         'net_salary'    => $net_salary,
-//     ]);
-
-//     return redirect()->route('payslips.index')->with('success', 'Payslip created successfully!');
-    
-// }
-
-// public function store(Request $request)
-// {
-//     $request->validate([
-//         'employee_id'      => 'required|exists:employees,id',
-//         'month'            => 'required|date',
-//         'total_hours'      => 'required|integer|min:1',
-//         'average_hours'    => 'required|numeric|min:1',
-//         'absent_days'      => 'nullable|integer|min:0',
-//         'sick_leave_days'  => 'nullable|integer|min:0',
-//         'salary'           => 'required|numeric|min:0',
-//         'allowance'        => 'nullable|numeric|min:0',
-//         'deduction'        => 'nullable|numeric|min:0',
-//     ]);
-
-//     $net_salary = $request->salary + ($request->allowance ?? 0) - ($request->deduction ?? 0);
-
-//     Payslip::create([
-//         'employee_id'       => $request->employee_id,
-//         'month'             => $request->month,
-//         'total_hours'       => $request->total_hours,
-//         'average_hours'     => $request->average_hours,
-//         'absent_days'       => $request->absent_days ?? 0,
-//         'sick_leave_days'   => $request->sick_leave_days ?? 0,
-//         'salary'            => $request->salary,
-//         'allowance'         => $request->allowance ?? 0,
-//         'deduction'         => $request->deduction ?? 0,
-//         'net_salary'        => $net_salary,
-//     ]);
-
-//     return redirect()->route('payslips.index')->with('success', 'Payslip created successfully!');
-// }
 
 public function store(Request $request)
 {
@@ -228,4 +149,6 @@ public function update(Request $request, Payslip $payslip)
 }
 
 
+
 }
+

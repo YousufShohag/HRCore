@@ -31,4 +31,8 @@ class Payslip extends Model
     {
         return $this->hasOne(\App\Models\MonthlyWorkDay::class, 'month', 'month');
     }
+    public function getNetSalaryAttribute()
+    {
+    return ($this->salary ?? 0) + ($this->allowance ?? 0) - ($this->deduction ?? 0);
+    }
 }

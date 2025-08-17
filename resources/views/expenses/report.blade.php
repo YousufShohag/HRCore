@@ -17,14 +17,16 @@
                 <input type="date" name="to_date" class="form-control" value="{{ $to_date ?? '' }}" required>
             </div>
             <div class="col-md-4 mt-4">
-                <button type="submit" class="btn btn-primary mt-2">Generate Report</button>
+                <button type="submit" class="btn btn-primary ">Generate Report</button>
             </div>
         </div>
     </form>
 
     @isset($expenses)
     <div class="d-flex justify-content-between align-items-center mb-2">
-        <h4>Results from {{ $from_date }} to {{ $to_date }}</h4>
+        <h4>Results from {{ \Carbon\Carbon::parse($from_date)->format('m/d/y') }} to {{ \Carbon\Carbon::parse($to_date)->format('m/d/y') }}</h4>
+
+       
         <button class="btn btn-success" onclick="window.print()">
             <i class="bi bi-printer"></i> Print Report
         </button>

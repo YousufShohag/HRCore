@@ -34,10 +34,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Employees
-    Route::resource('employees', EmployeeController::class);
+    Route::resource('employees', EmployeeController::class)->except(['show']);
     Route::get('/employees/{id}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
     Route::post('/employees/{id}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::get('/employee/{id}/id-card', [EmployeeController::class, 'generateIdCard'])->name('employee.id-card');
+    
+
+    Route::get('/employees/search', [EmployeeController::class, 'search'])->name('employees.search');
+
+
 
     // Payslips
     Route::get('/payslips', [PayslipController::class, 'index'])->name('payslips.index');
@@ -48,6 +53,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/payslips/{payslip}', [PayslipController::class, 'destroy'])->name('payslips.destroy');
     Route::get('/payslips/{id}', [PayslipController::class, 'show'])->name('payslips.show');
 
+
+
+// Route::get('/payslips', [PayslipController::class, 'index'])->name('payslips.index');
+// Route::get('/payslips/export-pdf', [PayslipController::class, 'exportPdf'])->name('payslips.exportPdf');
+// existing create/show/update/destroy routes stay as you have them
+
+
+    // monthly_work_days
     Route::resource('monthly_work_days', MonthlyWorkDayController::class);
 
     // Expenses

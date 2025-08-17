@@ -187,6 +187,8 @@ public function destroy($id)
 
 }
 
+
+
 public function edit($id)
 {
     $employee = Employee::findOrFail($id);
@@ -266,6 +268,29 @@ public function generateIdCard($id)
 
     return $pdf->stream("employee_id_card_{$employee->id}.pdf");
 }
+
+public function search(Request $request)
+    {
+        $term = $request->get('q');
+
+        $employees = Employee::where('name', 'like', "%{$term}%")
+            ->orWhere('designation', 'like', "%{$term}%")
+            ->limit(10)
+            ->get();
+
+        $results = [];
+
+        foreach ($employees as $emp) {
+            $results[] = [
+                'id' => $emp->id,
+                'text' => $emp->name . ' (' . $emp->designation . ')',
+                'salary' => $emp->basic_salary,
+            ];
+        }
+
+        return response()->json($results);
+    }
+
 
 
 }
